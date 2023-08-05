@@ -39,3 +39,8 @@ resource "hcloud_server_network" "bastion-dev-net" {
   ip         = "10.20.0.2"
 }
 
+
+resource "hcloud_firewall_attachment" "bastion-dev-firewall-attachment" {
+  firewall_id = hcloud_firewall.dev-bastion-firewall.id
+  server_ids  = [hcloud_server.bastion-dev.id]
+}
