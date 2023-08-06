@@ -8,7 +8,8 @@ data "hcloud_ssh_keys" "all_keys" {
 }
 
 data "hcloud_image" "debian" {
-  name = "debian-12"
+  name              = "debian-12"
+  with_architecture = "arm"
 }
 
 # ARM64
@@ -21,7 +22,7 @@ data "hcloud_server_type" "cax11" {
 resource "hcloud_server" "bastion-dev" {
   name        = "bastion-dev"
   image       = data.hcloud_image.debian.id
-  server_type = data.hcloud_server_type.cax11.id
+  server_type = data.hcloud_server_type.cax11.name
   public_net {
     ipv4_enabled = true
     ipv6_enabled = true
@@ -29,14 +30,14 @@ resource "hcloud_server" "bastion-dev" {
   ssh_keys = data.hcloud_ssh_keys.all_keys.ssh_keys.*.name
 
   depends_on = [
-    hcloud_network.dev-net,
+    hcloud_network_subnet.dev-net-subnet,
   ]
 }
 
 resource "hcloud_server_network" "bastion-dev-net" {
-  server_id  = hcloud_server.bastion-dev.id
-  network_id = hcloud_network.dev-net.id
-  ip         = "10.20.0.2"
+  server_id = hcloud_server.bastion-dev.id
+  subnet_id = hcloud_network_subnet.dev-net-subnet.id
+  ip        = "10.20.0.2"
 }
 
 
