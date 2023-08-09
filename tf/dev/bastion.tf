@@ -19,8 +19,8 @@ data "hcloud_server_type" "cax11" {
 }
 
 # Create a new server running debian
-resource "hcloud_server" "bastion-dev" {
-  name        = "bastion-dev"
+resource "hcloud_server" "node-A" {
+  name        = "node-A"
   image       = data.hcloud_image.debian.id
   server_type = data.hcloud_server_type.cax11.name
   public_net {
@@ -34,14 +34,40 @@ resource "hcloud_server" "bastion-dev" {
   ]
 }
 
-resource "hcloud_server_network" "bastion-dev-net" {
-  server_id = hcloud_server.bastion-dev.id
+resource "hcloud_server_network" "node-A-net" {
+  server_id = hcloud_server.node-A.id
   subnet_id = hcloud_network_subnet.dev-net-subnet.id
   ip        = "10.20.0.2"
 }
 
 
-resource "hcloud_firewall_attachment" "bastion-dev-firewall-attachment" {
-  firewall_id = hcloud_firewall.dev-bastion-firewall.id
-  server_ids  = [hcloud_server.bastion-dev.id]
+data "hcloud_network" "mgmt-net" {
+  name = "mgmt-net"
+}
+
+resource "hcloud_server" "node-F" {
+  name        = "node-F"
+  image       = data.hcloud_image.debian.id
+  server_type = data.hcloud_server_type.cax11.name
+  public_net {
+    ipv4_enabled = true
+    ipv6_enabled = true
+  }
+  ssh_keys = data.hcloud_ssh_keys.all_keys.ssh_keys.*.name
+
+  depends_on = [
+    hcloud_network_subnet.dev-net-subnet,
+  ]
+}
+
+resource "hcloud_server_network" "node-F-net-A" {
+  server_id = hcloud_server.node-F.id
+  subnet_id = hcloud_network_subnet.dev-net-subnet.id
+  ip        = "10.20.0.254"
+}
+
+resource "hcloud_server_network" "node-F-net-B" {
+  server_id  = hcloud_server.node-F.id
+  network_id = data.hcloud_network.mgmt-net.id
+  ip         = "10.10.0.254"
 }
