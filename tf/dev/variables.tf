@@ -1,4 +1,5 @@
 variable "hcloud_token" {
-  sensitive = true
-  type      = string
+  description = "Hetzner API token"
+  sensitive   = true
+  type        = string
 }
