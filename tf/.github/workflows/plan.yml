@@ -1,0 +1,23 @@
+name: Plan Terraform
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on:
+  pull_request:
+    types:
+      - opened
+    branches:
+      - 'feature/**'
+    paths:
+      - 'tf/dev/**'
+jobs:
+  Run-Terraform-Plan:
+    runs-on: ubuntu-latest
+    steps:
+      - run: cd tf/dev && terraform init
+      - bash: |
+          cd tf
+          terraform -chdir=hetzner plan -var='hcloud_token=${{ secrets.HCLOUD_TOKEN }}'
+          terraform -chdir=management plan -var='hcloud_token=${{ secrets.HCLOUD_TOKEN }}'
+          terraform -chdir=dev plan -var='hcloud_token=${{ secrets.HCLOUD_TOKEN }}'
+        env:
+          HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+      
