@@ -6,8 +6,6 @@ on:
       - opened
     branches:
       - 'feature/**'
-    paths:
-      - 'tf/dev/**'
 jobs:
   Run-Terraform-Plan:
     runs-on: ubuntu-latest
