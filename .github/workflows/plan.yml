@@ -2,9 +2,7 @@ name: Plan Terraform
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on:
   pull_request:
-    types:
-      - opened
-      - edited
+    types: [opened, synchronize]
     branches:
       - 'feature/**'
 
