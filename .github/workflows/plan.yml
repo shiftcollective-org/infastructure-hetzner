@@ -4,16 +4,15 @@ on:
   pull_request:
     types:
       - opened
+      - edited
     branches:
       - 'feature/**'
-    paths:
-      - 'tf/dev/**'
 jobs:
   Run-Terraform-Plan:
     runs-on: ubuntu-latest
     steps:
       - run: cd tf/dev && terraform init
-      - bash: |
+      - run: |
           cd tf
           terraform -chdir=hetzner plan -var='hcloud_token=${{ secrets.HCLOUD_TOKEN }}'
           terraform -chdir=management plan -var='hcloud_token=${{ secrets.HCLOUD_TOKEN }}'
