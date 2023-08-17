@@ -12,7 +12,7 @@ jobs:
   Run-Terraform-Plan:
     runs-on: ubuntu-latest
     steps:
-      - run: cd tf/dev && terraform init
+      - run: cd tf/dev && terraform init 
       - run: |
           cd tf
           terraform -chdir=hetzner plan -var='hcloud_token=${{ secrets.HCLOUD_TOKEN }}'
