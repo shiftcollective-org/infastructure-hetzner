@@ -20,4 +20,3 @@ jobs:
           terraform -chdir=dev plan -var='hcloud_token=${{ secrets.HCLOUD_TOKEN }}'
         env:
           HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
-      
